@@ -12,6 +12,8 @@
 
 # NOTE: ``__config__`` **must** be the first import because it (may)
 #       modify the search path used to locate shared libraries.
+import struct
+
 import crc32c.__config__
 import crc32c._crc32c_cffi
 
@@ -42,3 +44,57 @@ def value(chunk):
         int: New CRC checksum computed for ``chunk``.
     """
     return crc32c._crc32c_cffi.lib.crc32c_value(chunk, len(chunk))
+
+
+class Checksum(object):
+    """Hashlib-alike helper for CRC32C operations."""
+    __slots__ = ('_crc',)
+
+    def __init__(self, initial_value=b''):
+        """Construct the helper.
+
+        Args:
+            initial_value (Optional[bytes]): the initial chunk of data from
+            which the CRC32C checksum is computed.  Defaults to b''.
+        """
+        self._crc = value(initial_value)
+
+    def __int__(self):
+        return self._crc
+
+    def update(self, chunk):
+        """Update the checksum with a new chunk of data.
+
+        Args:
+            chunk (Optional[bytes]): a chunk of data used to extend
+            the CRC32C checksum.
+        """
+        self._crc = extend(self._crc, chunk)
+
+    def digest(self):
+        """Big-endian order, per RFC 4960.
+
+        Per: https://cloud.google.com/storage/docs/json_api/v1/objects#crc32c
+
+        Returns:
+            bytes: An eight-byte digest string.
+        """
+        return struct.pack('>L', self._crc)
+
+    def hexdigest(self):
+        """Like digest() except returned as a bytestring of double length.
+
+        Returns
+            bytes: A sixteen byte digest string, contaiing only hex digits.
+        """
+        return "{:08x}".format(self._crc).encode('ascii')
+
+    def copy(self):
+        """Create another checksum with the same CRC32C value.
+
+        Returns:
+            Checksum: the new instance.
+        """
+        clone = self.__class__()
+        clone._crc = self._crc
+        return clone

@@ -65,3 +65,65 @@ def test_extend_w_reduce():
 @pytest.mark.parametrize("chunk, expected", _EXPECTED)
 def test_value(chunk, expected):
     assert crc32c.value(chunk) == expected
+
+
+class TestChecksum(object):
+
+    @staticmethod
+    def test_ctor_defaults():
+        helper = crc32c.Checksum()
+        assert int(helper) == 0
+
+    @staticmethod
+    def test_ctor_explicit():
+        chunk = b'DEADBEEF'
+        helper = crc32c.Checksum(chunk)
+        assert int(helper) == crc32c.value(chunk)
+
+    @staticmethod
+    def test_update():
+        chunk = b'DEADBEEF'
+        helper = crc32c.Checksum()
+        helper.update(chunk)
+        assert int(helper) == crc32c.value(chunk)
+
+    @staticmethod
+    def test_update_w_multiple_chunks():
+        helper = crc32c.Checksum()
+
+        for index in itertools.islice(range(ISCSI_LENGTH), 0, None, 7):
+            chunk = ISCSI_SCSI_READ_10_COMMAND_PDU[index:index + 7]
+            helper.update(chunk)
+
+        assert int(helper) == ISCSI_CRC
+
+    @staticmethod
+    def test_digest_zero():
+        helper = crc32c.Checksum()
+        assert helper.digest() == b'\x00' * 4
+
+    @staticmethod
+    def test_digest_nonzero():
+        helper = crc32c.Checksum()
+        helper._crc = 0x01020304
+        assert helper.digest() == b'\x01\x02\x03\x04'
+
+    @staticmethod
+    def test_hexdigest_zero():
+        helper = crc32c.Checksum()
+        assert helper.hexdigest() == b'00' * 4
+
+    @staticmethod
+    def test_hexdigest_nonzero():
+        helper = crc32c.Checksum()
+        helper._crc =0x091A3B2c
+        assert helper.hexdigest() == b'091a3b2c'
+
+    @staticmethod
+    def test_copy():
+        chunk = b'DEADBEEF'
+        helper = crc32c.Checksum(chunk)
+        clone = helper.copy()
+        before = int(helper)
+        helper.update(b'FACEDACE')
+        assert int(clone) == before
