@@ -35,7 +35,8 @@ def value(chunk):
     """Compute a CRC checksum for a chunk of data.
 
     Args
-        chunk (Union[bytes, List[int], Tuple[int]]) new chunk of data
+        chunk (Union[bytes, List[int], Tuple[int]]): A new chunk of data.
+            Intended to be a byte string or similar.
 
     Returns
         (int) New CRC computed from chunk.
