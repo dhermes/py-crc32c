@@ -16,9 +16,26 @@ import crc32c.__config__
 import crc32c._crc32c_cffi
 
 
-def extend(*args, **kwargs):
-    return crc32c._crc32c_cffi.lib.crc32c_extend(*args, **kwargs)
+def extend(crc, chunk):
+    """Update an existing CRC with new chunk of data.
+
+    Args
+        crc: (int) existing CRC
+        chunk (Union[bytes, List[int], Tuple[int]]) new chunk of data
+
+    Returns
+        (int) New CRC computed by extending existing CRC with chunk.
+    """
+    return crc32c._crc32c_cffi.lib.crc32c_extend(crc, chunk, len(chunk))
 
 
-def value(*args, **kwargs):
-    return crc32c._crc32c_cffi.lib.crc32c_value(*args, **kwargs)
+def value(chunk):
+    """Compute a CRC from a chunk of data.
+
+    Args
+        chunk (Union[bytes, List[int], Tuple[int]]) new chunk of data
+
+    Returns
+        (int) New CRC computed from chunk.
+    """
+    return crc32c._crc32c_cffi.lib.crc32c_value(chunk, len(chunk))
