@@ -39,6 +39,6 @@ def value(chunk):
             Intended to be a byte string or similar.
 
     Returns
-        (int) New CRC computed from chunk.
+        int: New CRC checksum computed for ``chunk``.
     """
     return crc32c._crc32c_cffi.lib.crc32c_value(chunk, len(chunk))
