@@ -32,7 +32,7 @@ def extend(crc, chunk):
 
 
 def value(chunk):
-    """Compute a CRC from a chunk of data.
+    """Compute a CRC checksum for a chunk of data.
 
     Args
         chunk (Union[bytes, List[int], Tuple[int]]) new chunk of data
