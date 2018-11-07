@@ -25,7 +25,8 @@ def extend(crc, chunk):
             Intended to be a byte string or similar.
 
     Returns
-        (int) New CRC computed by extending existing CRC with chunk.
+        int: New CRC checksum computed by extending existing CRC
+        with ``chunk``.
     """
     return crc32c._crc32c_cffi.lib.crc32c_extend(crc, chunk, len(chunk))
 
