@@ -20,7 +20,7 @@ def extend(crc, chunk):
     """Update an existing CRC with new chunk of data.
 
     Args
-        crc: (int) existing CRC
+        crc (int): An existing CRC check sum.
         chunk (Union[bytes, List[int], Tuple[int]]) new chunk of data
 
     Returns
