@@ -21,7 +21,8 @@ def extend(crc, chunk):
 
     Args
         crc (int): An existing CRC check sum.
-        chunk (Union[bytes, List[int], Tuple[int]]) new chunk of data
+        chunk (Union[bytes, List[int], Tuple[int]]): A new chunk of data.
+            Intended to be a byte string or similar.
 
     Returns
         (int) New CRC computed by extending existing CRC with chunk.
