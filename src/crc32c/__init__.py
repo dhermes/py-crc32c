@@ -17,7 +17,7 @@ import crc32c._crc32c_cffi
 
 
 def extend(crc, chunk):
-    """Update an existing CRC with new chunk of data.
+    """Update an existing CRC checksum with new chunk of data.
 
     Args
         crc (int): An existing CRC check sum.
