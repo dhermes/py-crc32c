@@ -53,9 +53,10 @@ class Checksum(object):
         initial_value (Optional[bytes]): the initial chunk of data from
             which the CRC32C checksum is computed.  Defaults to b''.
     """
-    __slots__ = ('_crc',)
 
-    def __init__(self, initial_value=b''):
+    __slots__ = ("_crc",)
+
+    def __init__(self, initial_value=b""):
         self._crc = value(initial_value)
 
     def __int__(self):
@@ -78,7 +79,7 @@ class Checksum(object):
         Returns:
             bytes: An eight-byte digest string.
         """
-        return struct.pack('>L', self._crc)
+        return struct.pack(">L", self._crc)
 
     def hexdigest(self):
         """Like :meth:`digest` except returns as a bytestring of double length.
@@ -86,7 +87,7 @@ class Checksum(object):
         Returns
             bytes: A sixteen byte digest string, contaiing only hex digits.
         """
-        return "{:08x}".format(self._crc).encode('ascii')
+        return "{:08x}".format(self._crc).encode("ascii")
 
     def copy(self):
         """Create another checksum with the same CRC32C value.
