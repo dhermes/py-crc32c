@@ -10,10 +10,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# NOTE: ``__config__`` **must** be the first import because it (may)
-#       modify the search path used to locate shared libraries.
 import struct
 
+# NOTE: ``__config__`` **must** be the first import because it (may)
+#       modify the search path used to locate shared libraries.
 import crc32c.__config__
 import crc32c._crc32c_cffi
 
@@ -47,16 +47,15 @@ def value(chunk):
 
 
 class Checksum(object):
-    """Hashlib-alike helper for CRC32C operations."""
+    """Hashlib-alike helper for CRC32C operations.
+
+    Args:
+        initial_value (Optional[bytes]): the initial chunk of data from
+            which the CRC32C checksum is computed.  Defaults to b''.
+    """
     __slots__ = ('_crc',)
 
     def __init__(self, initial_value=b''):
-        """Construct the helper.
-
-        Args:
-            initial_value (Optional[bytes]): the initial chunk of data from
-            which the CRC32C checksum is computed.  Defaults to b''.
-        """
         self._crc = value(initial_value)
 
     def __int__(self):
@@ -67,14 +66,14 @@ class Checksum(object):
 
         Args:
             chunk (Optional[bytes]): a chunk of data used to extend
-            the CRC32C checksum.
+                the CRC32C checksum.
         """
         self._crc = extend(self._crc, chunk)
 
     def digest(self):
         """Big-endian order, per RFC 4960.
 
-        Per: https://cloud.google.com/storage/docs/json_api/v1/objects#crc32c
+        See: https://cloud.google.com/storage/docs/json_api/v1/objects#crc32c
 
         Returns:
             bytes: An eight-byte digest string.
@@ -82,7 +81,7 @@ class Checksum(object):
         return struct.pack('>L', self._crc)
 
     def hexdigest(self):
-        """Like digest() except returned as a bytestring of double length.
+        """Like :meth:`digest` except returns as a bytestring of double length.
 
         Returns
             bytes: A sixteen byte digest string, contaiing only hex digits.
