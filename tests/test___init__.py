@@ -11,8 +11,8 @@
 # limitations under the License.
 import functools
 import itertools
+from unittest import mock
 
-import mock
 import pytest
 
 import crc32c
@@ -264,5 +264,4 @@ class TestChecksum(object):
         assert helper._crc == ISCSI_CRC
         assert found == expected
         for call in stream.read.call_args_list:
-            assert call[0] == (chunksize,)
-            assert call[1] == {}
+            assert call == mock.call(chunksize)
