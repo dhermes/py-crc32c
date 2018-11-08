@@ -257,7 +257,7 @@ class TestChecksum(object):
         helper = crc32c.Checksum()
         expected = list(iscsi_chunks(chunksize))
         stream = mock.Mock(spec=["read"])
-        stream.read.side_effect = expected + [""]
+        stream.read.side_effect = expected + [b""]
 
         found = list(helper.consume(stream, chunksize))
 

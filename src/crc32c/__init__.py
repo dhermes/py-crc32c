@@ -100,10 +100,12 @@ class Checksum(object):
         """Consume chunks from a stream, extending our CRC32 checksum.
 
         Args:
-            stream (readable file-like object): the stream to consume.
+            stream (BinaryIO): the stream to consume.
             chunksize (int): the size of the read to perform
+
         Returns:
-            (generator) iterable of the chunks read from the stream.
+            Generator[bytes, None, None]: Tterable of the chunks read from the
+            stream.
         """
         while True:
             chunk = stream.read(chunksize)
