@@ -59,9 +59,6 @@ class Checksum(object):
     def __init__(self, initial_value=b""):
         self._crc = value(initial_value)
 
-    def __int__(self):
-        return self._crc
-
     def update(self, chunk):
         """Update the checksum with a new chunk of data.
 

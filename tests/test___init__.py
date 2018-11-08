@@ -194,20 +194,20 @@ class TestChecksum(object):
     @staticmethod
     def test_ctor_defaults():
         helper = crc32c.Checksum()
-        assert int(helper) == 0
+        assert helper._crc == 0
 
     @staticmethod
     def test_ctor_explicit():
         chunk = b"DEADBEEF"
         helper = crc32c.Checksum(chunk)
-        assert int(helper) == crc32c.value(chunk)
+        assert helper._crc == crc32c.value(chunk)
 
     @staticmethod
     def test_update():
         chunk = b"DEADBEEF"
         helper = crc32c.Checksum()
         helper.update(chunk)
-        assert int(helper) == crc32c.value(chunk)
+        assert helper._crc == crc32c.value(chunk)
 
     @staticmethod
     def test_update_w_multiple_chunks():
@@ -217,7 +217,7 @@ class TestChecksum(object):
             chunk = ISCSI_SCSI_READ_10_COMMAND_PDU[index : index + 7]
             helper.update(chunk)
 
-        assert int(helper) == ISCSI_CRC
+        assert helper._crc == ISCSI_CRC
 
     @staticmethod
     def test_digest_zero():
@@ -246,6 +246,6 @@ class TestChecksum(object):
         chunk = b"DEADBEEF"
         helper = crc32c.Checksum(chunk)
         clone = helper.copy()
-        before = int(helper)
+        before = helper._crc
         helper.update(b"FACEDACE")
-        assert int(clone) == before
+        assert clone._crc == before
