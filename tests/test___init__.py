@@ -17,7 +17,85 @@ import pytest
 import crc32c
 
 
+EMPTY = b''
+EMPTY_CRC = 0x00000000
+
 # From: https://tools.ietf.org/html/rfc3720#appendix-B.4
+#
+#   32 bytes of zeroes:
+#
+#     Byte:        0  1  2  3
+#
+#        0:       00 00 00 00
+#      ...
+#       28:       00 00 00 00
+#
+#      CRC:       aa 36 91 8a
+
+ALL_ZEROS = b'\x00' * 32
+ALL_ZEROS_CRC = 0x8a9136aa
+
+#   32 bytes of ones:
+#
+#     Byte:        0  1  2  3
+#
+#        0:       ff ff ff ff
+#      ...
+#       28:       ff ff ff ff
+#
+#      CRC:       43 ab a8 62
+
+ALL_ONES = b'\xff' * 32
+ALL_ONES_CRC = 0x62a8ab43
+
+#
+#   32 bytes of incrementing 00..1f:
+#
+#     Byte:        0  1  2  3
+#
+#        0:       00 01 02 03
+#      ...
+#       28:       1c 1d 1e 1f
+#
+#      CRC:       4e 79 dd 46
+
+INCREMENTING = bytes(range(32))
+INCREMENTING_CRC = 0x46dd794e
+
+#
+#   32 bytes of decrementing 1f..00:
+#
+#     Byte:        0  1  2  3
+#
+#        0:       1f 1e 1d 1c
+#      ...
+#       28:       03 02 01 00
+#
+#      CRC:       5c db 3f 11
+
+DECREMENTING = bytes(reversed(range(32)))
+DECREMENTING_CRC = 0x113fdb5c
+
+#
+#    An iSCSI - SCSI Read (10) Command PDU
+#
+#    Byte:        0  1  2  3
+#
+#       0:       01 c0 00 00
+#       4:       00 00 00 00
+#       8:       00 00 00 00
+#      12:       00 00 00 00
+#      16:       14 00 00 00
+#      20:       00 00 04 00
+#      24:       00 00 00 14
+#      28:       00 00 00 18
+#      32:       28 00 00 00
+#      36:       00 00 00 00
+#      40:       02 00 00 00
+#      44:       00 00 00 00
+#
+#     CRC:       56 3a 96 d9
+
 ISCSI_SCSI_READ_10_COMMAND_PDU = [
     0x01, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00,
@@ -28,12 +106,13 @@ ISCSI_LENGTH = len(ISCSI_SCSI_READ_10_COMMAND_PDU)
 ISCSI_BYTES = bytes(ISCSI_SCSI_READ_10_COMMAND_PDU)
 ISCSI_CRC = 0xd9963a56
 
+
 _EXPECTED = [
-    (b'', 0x00000000),
-    (b'\x00' * 32, 0x8a9136aa),
-    (b'\xff' * 32, 0x62a8ab43),
-    (bytes(range(32)), 0x46dd794e),
-    (bytes(reversed(range(32))), 0x113fdb5c),
+    (EMPTY, EMPTY_CRC),
+    (ALL_ZEROS, ALL_ZEROS_CRC),
+    (ALL_ONES, ALL_ONES_CRC),
+    (INCREMENTING, INCREMENTING_CRC),
+    (DECREMENTING, DECREMENTING_CRC),
     (ISCSI_SCSI_READ_10_COMMAND_PDU, ISCSI_CRC),
     (ISCSI_BYTES, ISCSI_CRC),
 ]
