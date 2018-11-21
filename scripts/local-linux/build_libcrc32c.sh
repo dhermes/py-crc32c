@@ -25,6 +25,7 @@ fi
 CRC32C_INSTALL_PREFIX=${REPO_ROOT}/usr
 
 # Make sure we have an updated `pip`.
+# NOTE: If this fails, please update `pip` in your local install.
 ${PY_BIN} -m pip install --upgrade pip
 # Create a virtualenv where we can install `cmake`.
 ${PY_BIN} -m pip install --upgrade virtualenv
